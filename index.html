@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Treatment Predictor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+    <style>
+        /* Loader styles */
+        #loader {
+            display: none; /* Hidden by default */
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            text-align: center;
+        }
+
+        /* Notification board styles */
+        .notification-board {
+            border: 1px solid #007bff; /* Blue border */
+            display: none;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text */
+            margin-top: 20px; /* Margin at the top */
+        }
+
+        .notification-board h4 {
+            margin-bottom: 10px;
+        }
+
+        .notification {
+            background: white;
+            color: red; /* Red text for notifications */
+            /* border-radius: 5px; */
+            padding: 5px;
+        }
+
+        /* Form hidden initially */
+        #medical-form {
+            display: none; /* Hide form initially */
+        }
+
+        /* Card styles for modern look */
+        .form-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <div id="loader">
+            <i class="fas fa-spinner fa-spin"></i> <strong class="text-muted">Please wait...</strong>
+        </div>
+
+        <div class="main-header mb-4">
+            <h1><i class="fas fa-user-md"></i> <strong>Anna Care</strong></h1>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-card">
+                    <form id="medical-form">
+                        <div class="form-group">
+                            <label for="fever">Fever:</label><br>
+                            <input type="radio" id="fever-yes" name="fever" value="1" required> Yes
+                            <input type="radio" id="fever-no" name="fever" value="0" required> No
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cough">Cough:</label><br>
+                            <input type="radio" id="cough-yes" name="cough" value="1" required> Yes
+                            <input type="radio" id="cough-no" name="cough" value="0" required> No
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fatigue">Fatigue:</label><br>
+                            <input type="radio" id="fatigue-yes" name="fatigue" value="1" required> Yes
+                            <input type="radio" id="fatigue-no" name="fatigue" value="0" required> No
+                        </div>
+
+                        <div class="form-group">
+                            <label for="difficulty-breathing">Difficulty Breathing:</label><br>
+                            <input type="radio" id="breathing-yes" name="difficulty_breathing" value="1" required> Yes
+                            <input type="radio" id="breathing-no" name="difficulty_breathing" value="0" required> No
+                        </div>
+
+                        <div class="form-group">
+                            <label for="age">Age:</label>
+                            <input type="number" id="age" name="age" class="form-control" placeholder="Enter age" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender" class="form-control" required>
+                                <option value="1">Male</option>
+                                <option value="0">Female</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="blood-pressure">Blood Pressure:</label>
+                            <select id="blood_pressure" name="blood_pressure" class="form-control" required>
+                                <option value="0">Normal</option>
+                                <option value="1">High</option>
+                                <option value="-1">Low</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cholesterol-level">Cholesterol Level:</label>
+                            <select id="cholesterol_level" name="cholesterol_level" class="form-control" required>
+                                <option value="0">Normal</option>
+                                <option value="1">High</option>
+                                <option value="-1">Low</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="outcome">Doctor's Observation:</label><br>
+                            <input type="radio" id="outcome-positive" name="outcome" value="Positive" required> Positive
+                            <input type="radio" id="outcome-negative" name="outcome" value="Negative" required> Negative
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Predict Disease</button>
+                    </form>
+
+                    <div id="prediction-result"></div> <br>
+
+                    <!-- Section for submitting doctor's note -->
+                    <div id="doctor-note-section" style="display: none;">
+                        <h4 class="text-muted">Doctor's Remark</h4>
+                        <form id="doctor-note-form">
+                            <input type="hidden" id="predicted-disease" name="predicted_disease" />
+                            <div class="form-group">
+                                <label for="doctor-note">Please enter your remark:</label>
+                                <textarea id="doctor-note" name="doctor_note" rows="4" class="form-control" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary mb-3">Submit</button>
+                            <button type="button" id="reset-button" class="btn btn-primary btn-block">Reset</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div id="notification-board" class="notification-board">
+                    <h4><i class="fas fa-bell"></i> Notifications</h4>
+                    <div id="notifications" ></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
