@@ -141,7 +141,7 @@ document.getElementById('medical-form').addEventListener('submit', (event) => {
 
         // Display the prediction result
         document.getElementById('prediction-result').innerHTML = `
-            Possible Disease: ${predictedDisease} <br/>
+            Diagnosis: ${predictedDisease} <br/>
             <button id="load-doctor-note" class="btn btn-secondary mt-3">Add Doctor's Note</button> <br/>
         `;
         //Certainty: ${confidence.toFixed(2)}%
@@ -211,12 +211,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Add findings to notification board
-        findings.forEach(finding => {
+        findings.forEach((finding,index) => {
             const notificationDiv = document.createElement('div');
             notificationDiv.className = 'notification';
-            notificationDiv.innerText = finding;
+            notificationDiv.innerText = `- ${finding}`;
             document.getElementById('notifications').appendChild(notificationDiv);
+            //console.log(index)
         });
+        // console.log(findings.length)
+        document.getElementById("findings").innerText = `(${findings.length})`
     }
 
     // Add event listeners to form inputs
