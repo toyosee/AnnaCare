@@ -247,5 +247,55 @@ function resetFormAndNotifications() {
     document.getElementById('prediction-result').innerHTML = '';
 }
 
+// Manage what happens when doctor submit remark
+document.getElementById('doctor-note-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Call the function to gather and print the findings, remarks, and diagnosis
+    sendToPrint();
+});
+
+function sendToPrint() {
+    // Collect all findings from the notifications area
+    const findings = [];
+    document.querySelectorAll('#notifications .notification').forEach((notification) => {
+        findings.push(notification.innerText);
+    });
+
+    // Get the diagnosed disease from the prediction result area
+    const diagnosedDisease = document.getElementById('predicted-disease').value;
+
+    // Get the doctor's remark from the form
+    const doctorNote = document.getElementById('doctor-note').value;
+
+    // Create a print content block
+    let printContent = '<h2>Medical Findings</h2><ul>';
+    findings.forEach(finding => {
+        printContent += `<li>${finding}</li>`;
+    });
+    printContent += '</ul>';
+
+    // Add diagnosed disease and doctor's remark to the print content
+    printContent += `<h3>Diagnosed Disease: ${diagnosedDisease}</h3>`;
+    printContent += `<h3>Doctor's Remarks</h3><p>${doctorNote}</p>`;
+
+    // Open a new window for printing
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Medical Findings, Diagnosis, and Doctor\'s Remarks</title>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(printContent);  // Insert findings, diagnosis, and doctor's remark into the new window
+    printWindow.document.write('</body></html>');
+
+    // Trigger the print dialog
+    printWindow.document.close();  // Close the document to complete writing
+    printWindow.print();  // Initiate the print
+
+    // Optional: Automatically close the print window after printing
+    printWindow.onafterprint = function() {
+        printWindow.close();
+    };
+}
+
+
 // Add event listener for the reset button
 document.getElementById('reset-button').addEventListener('click', resetFormAndNotifications);
