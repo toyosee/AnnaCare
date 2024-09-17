@@ -24,11 +24,11 @@
 
         /* Notification board styles */
         .notification-board {
-            border: 1px solid #007bff; /* Blue border */
+            border: 1px solid #ff0080; /* Blue border */
             display: none;
             border-radius: 5px;
             padding: 15px;
-            background-color: #007bff; /* Blue background */
+            background-color: #ff0080; /* Blue background */
             color: white; /* White text */
             margin-top: 20px; /* Margin at the top */
         }
@@ -39,7 +39,7 @@
 
         .notification {
             background: white;
-            color: red; /* Red text for notifications */
+            color: #ff0080; /* Red text for notifications */
             /* border-radius: 5px; */
             padding: 5px;
         }
@@ -60,6 +60,18 @@
             padding: 20px;
             background-color: #f9f9f9;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-transform{
+            background: #ff0080;
+            border: 1px solid #ff0080;
+            color: white;
+        }
+
+        .btn-transform:hover{
+            background: #a91b60;
+            border: 1px solid #a91b60;
+            color: white;
         }
     </style>
 </head>
@@ -140,7 +152,7 @@
                             <input type="radio" id="outcome-negative" name="outcome" value="Negative" required> Negative
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-block mb-3">Diagnose</button>
+                        <button type="submit" class="btn btn-block mb-3 btn-transform">Diagnose</button>
                     </form>
 
                     <div id="prediction-result"></div> <br>
@@ -154,8 +166,8 @@
                                 <label for="doctor-note">Please enter your remark:</label>
                                 <textarea id="doctor-note" name="doctor_note" rows="4" class="form-control" required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary mb-3">Submit</button>
-                            <button type="button" id="reset-button" class="btn btn-primary btn-block">Reset</button>
+                            <button type="submit" class="btn btn-transform mb-3">Submit</button>
+                            <button type="button" id="reset-button" class="btn btn-transform btn-block">Reset</button>
                         </form>
                     </div>
                 </div>
