@@ -241,10 +241,16 @@ function resetFormAndNotifications() {
     document.getElementById('notifications').innerHTML = '';
 
     // Hide the doctor's note section
-    document.getElementById('doctor-note-section').style.display = 'none';
+    document.getElementById('doctor-note-section').style.display = 'none'
 
     // Clear prediction result
-    document.getElementById('prediction-result').innerHTML = '';
+    document.getElementById('prediction-result').innerHTML = ''
+
+    // Clear findings count
+    document.getElementById("findings").innerText = `(0)`
+
+    // Clear Doctor Note
+    document.getElementById('doctor-note').value = ''
 }
 
 // Manage what happens when doctor submit remark
